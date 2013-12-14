@@ -9,7 +9,7 @@ import flixel.tweens.FlxTween;
  * ...
  * @author 
  */
-class Person extends Mover
+class Person extends Character
 {
 	public function new(a_type:Int) 
 	{

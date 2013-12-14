@@ -10,30 +10,20 @@ import flixel.util.FlxMath;
 /**
  * A FlxState which can be used for the game's menu.
  */
-class Title extends FlxState
+class StateTitle extends StateFade
 {
 	private var m_title:FlxSprite;
-	private var m_start:FlxText;
+	private var m_start:Button;
+	private var m_credits:Button;
 	
 	private var m_percent:Float;
 	private var m_scale_step:Int;
 	
-	private var m_enable:Bool;
-
 	/**
 	 * Function that is called up when to state is created to set it up.
 	 */
 	override public function create():Void
 	{
-		// Set a background color
-		FlxG.cameras.bgColor = 0xff000000;
-		// Show the mouse (in case it hasn't been disabled)
-		#if !FLX_NO_MOUSE
-		FlxG.mouse.show();
-		#end
-		
-		m_enable = true;
-		
 		m_title = new FlxSprite();
 		m_title.loadGraphic("assets/b_title.png", false, false, 256, 64);
 		m_title.setPosition(FlxG.width / 2, 0);
@@ -45,22 +35,19 @@ class Title extends FlxState
 		m_scale_step = 0;
 		add(m_title);
 		
-		m_start = new FlxText(FlxG.width / 2, 3*FlxG.height / 4, 100, "Start");
-		m_start.setFormat("assets/Designer-Notes.ttf", 25, 0x888888, "center", FlxText.BORDER_NONE, 0, true);
-		m_start.offset.x = 50;
+		m_start = new Button(FlxG.width / 2 - 50, 3 * FlxG.height / 4-30, Lang.getString(Lang.MENU_START));
+		m_start.setOnDownCallback(_onStart);
+		//m_start.setFormat("assets/Designer-Notes.ttf", 25, 0x888888, "center", FlxText.BORDER_NONE, 0, true);
 		add(m_start);
+
+		m_credits = new Button(FlxG.width / 2-50, 3*FlxG.height / 4, Lang.getString(Lang.MENU_CREDITS));
+		m_credits.setOnDownCallback(_onCredits);
+		//m_credits.setFormat("assets/Designer-Notes.ttf", 25, 0x888888, "center", FlxText.BORDER_NONE, 0, true);
+		add(m_credits);
 
 		super.create();
 	}
 
-	/**
-	 * Function that is called when this state is destroyed - you might want to
-	 * consider setting all objects this state uses to null to help garbage collection.
-	 */
-	override public function destroy():Void
-	{
-		super.destroy();
-	}
 
 	/**
 	 * Function that is called once every frame.
@@ -84,18 +71,26 @@ class Title extends FlxState
 				m_scale_step++;
 			}
 		}
-
-		if (FlxG.mouse.justPressed)
-		{
-			m_enable = false;
-			FlxG.camera.fade(Game.FADE_COLOR, Game.FADE_DURATION, false, _changeState);
-			FlxG.log.add("pressed");
-		}
 		
 	}
 	
-	public function _changeState():Void
+	private function _onStart():Void
+	{
+		_leaveState(_onStartReady);
+	}
+	
+	private function _onCredits():Void
+	{
+		_leaveState(_onCreditsReady);
+	}
+	
+	private function _onStartReady():Void
 	{
 		FlxG.switchState(new Stage1());
+	}
+
+	private function _onCreditsReady():Void
+	{
+		FlxG.switchState(new StateCredits());
 	}
 }

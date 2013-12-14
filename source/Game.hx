@@ -5,9 +5,6 @@ import flixel.FlxGame;
 	
 class Game extends FlxGame
 {	
-	public static inline var FADE_COLOR:Int = 0xFFFFFFFF;
-	public static inline var FADE_DURATION:Float = 0.5;
-	
 	public function new()
 	{
 		var stageWidth:Int = Lib.current.stage.stageWidth;
@@ -19,6 +16,6 @@ class Game extends FlxGame
 		
 		var fps:Int = 60;
 
-		super(Math.ceil(stageWidth / ratio), Math.ceil(stageHeight / ratio), Stage1, ratio, fps, fps);
+		super(Math.ceil(stageWidth / ratio), Math.ceil(stageHeight / ratio), Lang, ratio, fps, fps);
 	}
 }

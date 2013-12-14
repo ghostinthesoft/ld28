@@ -7,7 +7,7 @@ import flixel.FlxSprite;
  * ...
  * @author 
  */
-class Man extends Mover
+class Man extends Character
 {
 	public function new(a_type:Int) 
 	{

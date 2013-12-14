@@ -10,59 +10,91 @@ import flixel.util.FlxMath;
 /**
  * A FlxState which can be used for the actual gameplay.
  */
-class Stage1 extends FadeState
+class Stage1 extends Stage
 {
-	private var m_man1:Man;
-	private var m_person1:Person;
+	static private var HOSTILE_WALK_TALKS:Array<Int> = [Lang.STAGE1_HOSTILE_WALK_TEXT1, Lang.STAGE1_HOSTILE_WALK_TEXT2, Lang.STAGE1_HOSTILE_WALK_TEXT3];
+	
+	private var m_lastTalk:Int=-1;
 	
 	/**
 	 * Function that is called up when to state is created to set it up.
 	 */
 	override public function create():Void
 	{
-		super.create();
+		// declaration of characters and bg
+		m_step = new Array<Int>();
+		m_char = new Array<Character>();
+		
+		m_char.push(new Character(Character.STAGE1_HOSTILE));
+		m_char[0].setx( -Character.CHARACTER_WIDTH2 );
+		
+		m_char.push(new Character(Character.STAGE1_FRIENDLY));
+		m_char[1].setx( FlxG.width + Character.CHARACTER_WIDTH2 );
+		
+		m_bg = new FlxSprite();
+		m_bg.loadGraphic("assets/b_stage1.png", false, false);
+		m_bg.setPosition(0, 0);
+		
+		// hostile is walking
+		m_step.push(Stage.STEP_WALK_AND_TALK);
+		m_char[0].gotox = FlxG.width*0.5;
+		
+		// friendly is waiting
+		m_step.push(Stage.STEP_OUTSIDE_RIGHT);
 		
 		FlxG.debugger.visible = true;
 		
-		var _bg = new FlxSprite();
-		_bg.loadGraphic("assets/b_stage1.png", false, false);
-		_bg.setPosition(0, 0);
-		add(_bg);				
-		
-		
-		m_man1 = new Man(Mover.STAGE1_MAN);
-		m_man1.setx( -64);
-		add(m_man1);		
-		
-		//m_person1 = new Person(Mover.STAGE1_PERSON1);
-		
+		super.create();
 	}
 
-	/**
-	 * Function that is called when this state is destroyed - you might want to
-	 * consider setting all objects this state uses to null to help garbage collection.
-	 */
-	override public function destroy():Void
-	{
-		super.destroy();
-	}
 
 	/**
 	 * Function that is called once every frame.
 	 */
 	override public function update():Void
 	{
-		super.update();
 		
-		if (m_man1.move == 0)
+		switch(m_step[0])
 		{
-			m_man1.goto(Math.random()*FlxG.width);
+			case Stage.STEP_WALK_AND_TALK:
+
+			if (m_char[0].move == 0)
+			{
+				// talk
+				if (!m_char[0].isTalking)
+				{
+					var _needTalk:Bool = (Math.random() < 0.5);
+					if (_needTalk)
+					{
+						var _text:Int;
+						while (HOSTILE_WALK_TALKS[(_text = Math.floor(Math.random() * HOSTILE_WALK_TALKS.length))] == m_lastTalk) { }
+						m_lastTalk = HOSTILE_WALK_TALKS[_text];
+						m_char[0].talk(m_lastTalk);
+					}
+				}
+					
+				// if friendly is outside, let come in
+				if (m_step[1] == Stage.STEP_OUTSIDE_RIGHT)
+				{
+					var _changeStep:Bool = (Math.random() < 0.5);
+					if (_changeStep)
+					{
+						m_step[1] = Stage.STEP_WALK_AND_TALK;
+						m_char[1].move = 0;
+					}
+				}
+			}
 		}
 		
-		/*if (FlxG.mouse.justPressed)
+		super.update();
+		
+		
+		if (FlxG.mouse.justPressed)
 		{
-			FlxG.log.add("pressed");
-			_leaveState(false);
-		}*/
+			//m_char[0].talk(StateLang.);
+			//FlxG.log.add("pressed");
+			//_leaveState(false);
+		}
 	}
+	
 }
