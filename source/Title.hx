@@ -32,8 +32,6 @@ class Title extends FlxState
 		FlxG.mouse.show();
 		#end
 		
-		FlxG.debugger.visible = true;
-		
 		m_enable = true;
 		
 		m_title = new FlxSprite();

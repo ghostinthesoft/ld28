@@ -26,7 +26,7 @@ class FadeState extends FlxState
 		FlxG.mouse.show();
 		#end
 
-		FlxG.camera.fade(Game.FADE_COLOR, Game.FADE_DURATION, true, _enableState);
+		//FlxG.camera.fade(Game.FADE_COLOR, Game.FADE_DURATION, true, _enableState);
 		super.create();
 	}
 
