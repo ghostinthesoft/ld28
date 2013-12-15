@@ -8,8 +8,11 @@ import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
 
 /**
- * A FlxState which can be used for the actual gameplay.
+ * Stage1 state
+ * 
+ * @author Al1
  */
+
 class Stage1 extends Stage
 {
 	static private var HOSTILE_WALK_TALKS:Array<Int> = [Lang.STAGE1_HOSTILE_WALK_TEXT1, Lang.STAGE1_HOSTILE_WALK_TEXT2, Lang.STAGE1_HOSTILE_WALK_TEXT3];
@@ -40,7 +43,7 @@ class Stage1 extends Stage
 		m_char[0].gotox = FlxG.width*0.5;
 		
 		// friendly is waiting
-		m_step.push(Stage.STEP_OUTSIDE_RIGHT);
+		m_step.push(Stage.STEP_WAIT);
 		
 		FlxG.debugger.visible = true;
 		
@@ -53,12 +56,17 @@ class Stage1 extends Stage
 	 */
 	override public function update():Void
 	{
+		if (!m_enable)
+		{
+			super.update();
+			return;
+		}
 		
 		switch(m_step[0])
 		{
 			case Stage.STEP_WALK_AND_TALK:
 
-			if (m_char[0].move == 0)
+			if (m_char[0].movex == 0)
 			{
 				// talk
 				if (!m_char[0].isTalking)
@@ -74,15 +82,18 @@ class Stage1 extends Stage
 				}
 					
 				// if friendly is outside, let come in
-				if (m_step[1] == Stage.STEP_OUTSIDE_RIGHT)
+				/*if (m_step[1] == Stage.STEP_WAIT)
 				{
 					var _changeStep:Bool = (Math.random() < 0.5);
 					if (_changeStep)
 					{
 						m_step[1] = Stage.STEP_WALK_AND_TALK;
-						m_char[1].move = 0;
+						m_char[1].movex = 0;
 					}
-				}
+					
+					// char 0 become targetable
+					m_char[0].targetable = true;
+				}*/
 			}
 		}
 		

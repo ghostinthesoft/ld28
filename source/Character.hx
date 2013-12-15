@@ -5,11 +5,13 @@ import flixel.FlxSprite;
 import flixel.group.FlxGroup;
 import flixel.group.FlxTypedGroup.FlxTypedGroup;
 import flixel.text.FlxText;
+import flixel.util.FlxCollision;
 import flixel.util.FlxPoint;
 
 /**
- * ...
- * @author 
+ * Character behavior
+ * 
+ * @author Al1
  */
 class Character extends FlxTypedGroup<FlxSprite>
 {
@@ -22,16 +24,16 @@ class Character extends FlxTypedGroup<FlxSprite>
 	
 	private static inline var GOTO_TOLERANCE:Float = 2;
 	private static inline var GOTO_SPEED:Float = 100;
+	private static inline var COME_SPEED:Float = 50;
 
 	private static inline var BODY_WIDTH:Int = 64;
 	private static inline var BODY_WIDTH2:Int = BODY_WIDTH>>1;
 
 	
-	private var m_move:Int;
+	private var m_movex:Int;
 	private var m_gotox:Float;
-	private var m_rightspeed:FlxPoint;
-	private var m_leftspeed:FlxPoint;
-	private var m_idlespeed:FlxPoint;
+	private var m_comey:Float;
+	private var m_liney:Float;
 	
 	private var _x:Int = 0;
 	private var _y:Int = 0;
@@ -44,24 +46,24 @@ class Character extends FlxTypedGroup<FlxSprite>
 	private var m_head:FlxSprite;
 	private var m_body:FlxSprite;
 	
-	
-
-	public function new(a_type:Int) 
+	public function new(a_type:Int, a_liney:Float=50) 
 	{
-		m_type = a_type;
-
 		super();
-		m_rightspeed = new FlxPoint(GOTO_SPEED, 0);
-		m_leftspeed = new FlxPoint(-GOTO_SPEED, 0);
-		m_idlespeed = new FlxPoint(0, 0);
+		m_type = a_type;
+		m_liney = a_liney;
+
+		targetable = false;
 		
-		m_move = 0;
+		m_movex = 0;
 		m_gotox = 0;
+		m_comey = 0;
 		
 		m_body = new FlxSprite();
 		m_body.loadGraphic("assets/b_man1.png", true, true, BODY_WIDTH, 128);
 		m_body.animation.add("idle", [0], 12, false);
 		m_body.animation.add("walk", [0, 1, 2, 3, 4, 5], 12, true);
+		m_body.animation.add("come", [1, 3], 12);
+		m_body.velocity = new FlxPoint(0, 0);
 		add(m_body);
 		
 		m_head = new FlxSprite();
@@ -71,16 +73,41 @@ class Character extends FlxTypedGroup<FlxSprite>
 		add(m_head);
 		
 		m_talk = new FlxText(0, 0, FlxG.width >> 1);
-		m_talk.setFormat(null, 8, 0xFFFFFFFF, "center");
+		m_talk.setFormat(Game.FONT_TALK, 8, 0xFFFFFFFF, "center");
 		m_talk.visible = false;
 		add(m_talk);
 		
-		m_body.setPosition(-999, 50);
-		m_head.setPosition(-999, 50 - 96);
+		m_body.setPosition(-999, m_liney);
+		m_head.setPosition(-999, -999);
 		
 		m_talking = -999;
 	}
 	
+	public var targetable(default, default):Bool;
+
+	public var movex(get_movex, set_movex):Int;
+	private function get_movex():Int
+	{
+		return m_movex;
+	}
+
+	private function set_movex(a_movex:Int):Int
+	{
+		return m_movex = a_movex;
+	}
+
+	public function setx(a_x:Float):Void
+	{
+		m_body.setPosition(a_x - BODY_WIDTH2, m_liney);
+		m_head.setPosition(a_x, m_liney);
+	}
+
+	public var gotox(get_gotox, set_gotox):Float;
+	private function get_gotox():Float
+	{
+		return m_gotox;
+	}
+
 	// say if it's the man or the person
 	public var isTalking(get_isTalking, null):Bool;
 	private function get_isTalking():Bool
@@ -88,44 +115,28 @@ class Character extends FlxTypedGroup<FlxSprite>
 		return m_talking>0;
 	}
 	
-	/*public var x(get_x, set_x):Int;
-	public function set_x(nx:Int):Int
+	
+	// set destination
+	public function set_gotox(a_gotox:Float):Float
 	{
-		var offset:Int = nx - _x;
-		
-		for (object in members) 
-			object.x += offset;
-		
-		return _x = nx;
-	}
-	
-	public function get_x():Int { return _x; }
-	
-	public var y(get_y, set_y):Int;
-	public function set_y(ny:Int):Int
-	{
-		var offset:Int = ny - _y;
-		
-		for (object in members) 
-			object.y += offset;
-		
-		return _y = ny;
-	}
-	
-	public function get_y():Int { return _y;  }*/
-	
-	
-	public var move(get_move, set_move):Int;
-	private function get_move():Int
-	{
-		return m_move;
+		//a_gotox = FlxG.width / 2;
+		m_gotox = a_gotox;
+		var diff:Float = m_gotox - BODY_WIDTH2 - m_body.x;
+		if (diff > 0)
+			m_movex = 1;
+		if (diff < 0)
+			m_movex = -1;
+		return m_gotox;
 	}
 
-	private function set_move(a_move:Int):Int
+	// for coming
+	public function come(a_gotox:Float):Void
 	{
-		return m_move = a_move;
+		m_gotox = a_gotox;
+		m_comey = COME_SPEED;
 	}
 
+	// say a sentence
 	public function talk(a_text:Int):Void
 	{
 		var _string:String = Lang.getString(a_text);
@@ -136,76 +147,75 @@ class Character extends FlxTypedGroup<FlxSprite>
 		m_head.animation.play("talk");
 	}
 
-	public function setx(a_x:Float):Void
+	// check collision
+	public function checkCollision(a_object:FlxSprite):Bool
 	{
-		m_body.setPosition(a_x - BODY_WIDTH2, 50);
-		m_head.setPosition(a_x, 50);
+		if (FlxCollision.pixelPerfectCheck(m_body, a_object))
+			return true;
+			
+		if (FlxCollision.pixelPerfectCheck(m_head, a_object))
+			return true;
+			
+		return false;
 	}
-
-	public var gotox(get_gotox, set_gotox):Float;
-	private function get_gotox():Float
-	{
-		return m_gotox;
-	}
-
-	public function set_gotox(a_gotox:Float):Float
-	{
-		m_gotox = a_gotox;
-		var diff:Float = m_gotox - BODY_WIDTH2 - m_body.x;
-		if (diff > 0)
-			m_move = 1;
-		if (diff < 0)
-			m_move = -1;
-		return m_gotox;
-	}
-
+	
 	
 	
 	override public function update():Void
 	{
 		super.update();
-		if (m_move == 0)
-			return;
-			
-		var _gotoIdle:Bool = false;
-		var diff:Float = m_gotox -BODY_WIDTH2 - m_body.x;
 
-		if ( diff>GOTO_TOLERANCE )
+		// horizontal move ?
+		var diffx:Float = m_gotox - BODY_WIDTH2 - m_body.x;
+		if ( diffx>GOTO_TOLERANCE )
 		{
-			if (m_move == 1)
+			if (m_movex == 1)
 			{
-				m_body.velocity = m_rightspeed;
+				m_body.velocity.x = GOTO_SPEED;
 				m_body.facing = FlxObject.RIGHT;
 				m_head.facing = FlxObject.RIGHT;
-				m_body.animation.play("walk");
 			}
 			else
-				_gotoIdle = true;
-		}
-		else if ( diff<-GOTO_TOLERANCE )
-		{
-			if (m_move == -1)
 			{
-				m_body.velocity = m_leftspeed;
+				m_movex = 0;
+				m_body.velocity.x = 0;
+			}
+		}
+		else if ( diffx<-GOTO_TOLERANCE )
+		{
+			if (m_movex == -1)
+			{
+				m_body.velocity.x = -GOTO_SPEED;
 				m_body.facing = FlxObject.LEFT;
 				m_head.facing = FlxObject.LEFT;
-				m_body.animation.play("walk");
 			}
 			else
-				_gotoIdle = true;
+			{
+				m_movex = 0;
+				m_body.velocity.x = 0;
+			}
+		}
+
+		// update body animation according to velocity
+		if (m_comey > 0)
+		{
+			m_body.velocity.y = COME_SPEED;
+			m_body.animation.play("come");
 		}
 		else
-			_gotoIdle = true;
-			
-		if (_gotoIdle)
 		{
-			m_move = 0;
-			m_body.setPosition(m_gotox - BODY_WIDTH2, m_body.y);
-			m_body.velocity = m_idlespeed;
-			m_body.animation.play("idle");
+			if (m_body.velocity.x == 0)
+				m_body.animation.play("idle");
+			else
+				m_body.animation.play("walk");
 		}
-		
-		m_head.setPosition(m_body.x + 16, m_head.y);
+
+		// if no x velocity go to dest x position
+		/*if (m_body.velocity.x == 0)
+			m_body.setPosition(m_gotox - BODY_WIDTH2, m_body.y);*/
+
+		// set head position
+		m_head.setPosition(m_body.x + 16, m_body.y);
 		
 		// talking
 		if (m_talking > 0)

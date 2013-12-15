@@ -10,15 +10,18 @@ import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
 
 /**
- * A FlxState which can be used for the actual gameplay.
+ * Global Fading State
+ * 
+ * @author Al1
  */
 class StateFade extends FlxState
 {
+	public static inline var COLOR_WHITE:Int = 0xFFFFFFFF;
 	public static inline var COLOR_BLACK:Int = 0xFF000000;
 	public static inline var FADE_DURATION:Float = 0.5;
 	
 	public var m_enable:Bool = false;
-	public var m_bgColor:Int = COLOR_BLACK;
+	public var m_bgColor:Int = COLOR_WHITE;
 	
 	/**
 	 * Function that is called up when to state is created to set it up.
@@ -36,7 +39,7 @@ class StateFade extends FlxState
 		FlxG.mouse.show();
 		#end
 
-		FlxG.camera.fade(m_bgColor, FADE_DURATION, true, _enableState);
+		FlxG.camera.fade(COLOR_WHITE, FADE_DURATION, true, _enableState);
 		super.create();
 	}
 
@@ -48,9 +51,9 @@ class StateFade extends FlxState
 	private function _leaveState(?a_handler:Void->Void):Void
 	{
 		m_enable = false;
-		FlxG.camera.fade(m_bgColor, FADE_DURATION, false, a_handler);
+		FlxG.camera.fade(COLOR_WHITE, FADE_DURATION, false, a_handler);
 	}
-	
+
 	/**
 	 * Function that is called when this state is destroyed - you might want to
 	 * consider setting all objects this state uses to null to help garbage collection.

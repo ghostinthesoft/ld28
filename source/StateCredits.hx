@@ -8,7 +8,9 @@ import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
 
 /**
- * A FlxState which can be used for the game's menu.
+ * Credits State
+ * 
+ * @author Al1
  */
 class StateCredits extends StateFade
 {
@@ -20,16 +22,21 @@ class StateCredits extends StateFade
 	 */
 	override public function create():Void
 	{
-		m_bgColor = 0xFFFFFFFF;
-		
 		m_logo = new FlxSprite();
-		m_logo.loadGraphic("assets/b_logo.jpg", false, false, 200, 107);
+		m_logo.loadGraphic("assets/b_logo.jpg", false, false, 200);
 		m_logo.setPosition(FlxG.width / 2-100, 16);
 		add(m_logo);
 		
-		m_text = new FlxText(FlxG.width / 2-150, 128, 300, Lang.getString(Lang.CREDITS));
-		m_text.setFormat(null, 12, 0xFF000000, "center", FlxText.BORDER_NONE, 0, false);
-		add(m_text);
+		var _credit1:FlxText = new FlxText(FlxG.width / 2 - 150, 140, 300, Lang.getString(Lang.CREDITS1));
+		var _credit2:FlxText = new FlxText(FlxG.width / 2 - 150, 160, 300, Lang.getString(Lang.CREDITS2));
+		var _credit3:FlxText = new FlxText(FlxG.width / 2 - 150, 180, 300, Lang.getString(Lang.CREDITS3));
+		_credit1.setFormat(Game.FONT_MENU, 8, 0xFF888888, "center");
+		_credit2.setFormat(Game.FONT_MENU, 8, 0xFF888888, "center");
+		_credit3.setFormat(Game.FONT_MENU, 8, 0xFF888888, "center");
+		
+		add(_credit1);
+		add(_credit2);
+		add(_credit3);
 
 		super.create();
 	}

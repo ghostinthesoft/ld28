@@ -10,11 +10,12 @@ import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
 
 /**
- * A FlxState which can be used for the game's menu.
+ * Main Intro State
+ * 
+ * @author Al1
  */
 class StateIntro extends StateFade
 {
-	private var m_intro:FlxText;
 	private var m_elapsed:Float;
 
 	/**
@@ -27,11 +28,14 @@ class StateIntro extends StateFade
 
 		m_elapsed = 0;
 		
-		m_intro = new FlxText(FlxG.width / 2 - 175, FlxG.height * 0.3, 350);
-		m_intro.antialiasing = false;
-		m_intro.setFormat(null, 14, 0xFF000000, "center", FlxText.BORDER_NONE, 0, false);
-		m_intro.text=Lang.getString(Lang.INTRO);
-		add(m_intro);
+		var _intro2:FlxText = new FlxText(FlxG.width / 2 - 200, FlxG.height/2-70, 400, Lang.getString(Lang.INTRO2));
+		_intro2.setFormat(Game.FONT_BEAUTIFUL, 32, 0xFF000000, "center");
+
+		var _intro3:FlxText = new FlxText(FlxG.width / 2 - 200, FlxG.height/2-30, 400, Lang.getString(Lang.INTRO3));
+		_intro3.setFormat(Game.FONT_BEAUTIFUL, 32, 0xFF000000, "center");
+
+		add(_intro2);
+		add(_intro3);
 	}
 
 
@@ -46,7 +50,7 @@ class StateIntro extends StateFade
 			
 		m_elapsed += FlxG.elapsed;
 		
-		if (m_elapsed>5 || FlxG.mouse.justPressed)
+		if (m_elapsed>3 || FlxG.mouse.justPressed)
 		{
 			_leaveState(_changeState);
 		}

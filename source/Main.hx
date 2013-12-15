@@ -10,7 +10,9 @@ import flash.ui.Keyboard;
 import flixel.FlxGame;
 
 /**
- * @author Joshua Granick
+ * Entry class
+ * 
+ * @author Al1
  */
 class Main extends Sprite 
 {
