@@ -1,6 +1,7 @@
 package;
 
 import flash.Lib;
+import flixel.FlxG;
 import flixel.FlxGame;
 import flixel.system.FlxAssets;
 	
@@ -31,6 +32,54 @@ class Game extends FlxGame
 		
 		var fps:Int = 60;
 
-		super(Math.ceil(stageWidth / ratio), Math.ceil(stageHeight / ratio), Stage1, ratio, fps, fps);
+		super(Math.ceil(stageWidth / ratio), Math.ceil(stageHeight / ratio), Lang, ratio, fps, fps);
+	}
+	
+	static public function playMusic():Void
+	{
+		FlxG.sound.playMusic("assets/s_theme.mp3");
+	}
+	
+	static public function stopAll():Void
+	{
+		m_talking_sound = -1;
+		FlxG.sound.destroySounds();
+	}
+	
+	static private var m_readyToPlay:Bool = true;
+	static public function play(a_sound:String, a_force:Bool=false):Void
+	{
+		if (!a_force)
+		{
+			if (m_readyToPlay)
+			{
+				m_readyToPlay = false;
+				FlxG.sound.play(a_sound, 1, false, true, _onSoundComplete);
+			}
+		}
+		else
+		{
+			FlxG.sound.play(a_sound, 1, false, true);
+		}
+	}
+	
+	static private var m_talking_sound:Int = -1;
+	static public function talk():Void
+	{
+		if (m_readyToPlay)
+		{
+			var _talkmax:Int = 7;
+			var _talknum:Int = Std.int(Math.floor(Math.random() * _talkmax));
+			if ( _talknum == m_talking_sound )
+				_talknum = (_talknum + 1) % _talkmax;
+			m_talking_sound = _talknum;
+			m_readyToPlay = false;
+			FlxG.sound.play("assets/s_talk" + m_talking_sound + ".mp3", 1, false, true, _onSoundComplete);
+		}
+	}
+	
+	static public function _onSoundComplete():Void
+	{
+		m_readyToPlay = true;
 	}
 }

@@ -22,6 +22,8 @@ class StateFade extends FlxState
 	
 	public var m_enable:Bool = false;
 	public var m_bgColor:Int = COLOR_WHITE;
+
+	public var m_sound:Button;
 	
 	/**
 	 * Function that is called up when to state is created to set it up.
@@ -30,7 +32,10 @@ class StateFade extends FlxState
 	{
 		// curseur normal
 		Mouse.cursor = MouseCursor.AUTO; 
-		
+
+		// on arrête tout les sons
+		Game.stopAll();
+
 		// Set a background color
 		FlxG.cameras.bgColor = m_bgColor;
 			
@@ -38,7 +43,7 @@ class StateFade extends FlxState
 		#if !FLX_NO_MOUSE
 		FlxG.mouse.show();
 		#end
-
+		
 		FlxG.camera.fade(COLOR_WHITE, FADE_DURATION, true, _enableState);
 		super.create();
 	}

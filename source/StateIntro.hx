@@ -28,10 +28,10 @@ class StateIntro extends StateFade
 
 		m_elapsed = 0;
 		
-		var _intro2:FlxText = new FlxText(FlxG.width / 2 - 200, FlxG.height/2-70, 400, Lang.getString(Lang.INTRO2));
+		var _intro2:FlxText = new FlxText(FlxG.width / 2 - 200, FlxG.height/2-70, 400, Lang.getString(Lang.INTRO_1));
 		_intro2.setFormat(Game.FONT_BEAUTIFUL, 32, 0xFF000000, "center");
 
-		var _intro3:FlxText = new FlxText(FlxG.width / 2 - 200, FlxG.height/2-30, 400, Lang.getString(Lang.INTRO3));
+		var _intro3:FlxText = new FlxText(FlxG.width / 2 - 200, FlxG.height/2-30, 400, Lang.getString(Lang.INTRO_2));
 		_intro3.setFormat(Game.FONT_BEAUTIFUL, 32, 0xFF000000, "center");
 
 		add(_intro2);
@@ -60,5 +60,6 @@ class StateIntro extends StateFade
 	public function _changeState():Void
 	{
 		FlxG.switchState(new StateTitle());
+		Game.playMusic();
 	}
 }

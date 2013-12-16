@@ -30,7 +30,8 @@ class StateTitle extends StateFade
 	{
 		m_bgColor = 0xFF000000;
 		
-		var _intro1:FlxText = new FlxText(FlxG.width / 2 - 200, 10, 400, Lang.getString(Lang.INTRO1));
+		
+		var _intro1:FlxText = new FlxText(FlxG.width / 2 - 200, 10, 400, Lang.getString(Lang.TITLE));
 		_intro1.setFormat(Game.FONT_BEAUTIFUL, 24, 0xFFFFFFFF, "center");
 		add(_intro1);
 		
@@ -46,14 +47,17 @@ class StateTitle extends StateFade
 		add(m_title);
 		
 		m_start = new Button(FlxG.width / 2, 3 * FlxG.height / 4 - 30, 0, Lang.getString(Lang.MENU_START));
-		m_start.setOnDownCallback(_onStart);
+		m_start.setOnUpCallback(_onStart);
 		//m_start.setFormat("assets/Designer-Notes.ttf", 25, 0x888888, "center", FlxText.BORDER_NONE, 0, true);
 		add(m_start);
 
 		m_credits = new Button(FlxG.width / 2, 3 * FlxG.height / 4, 0, Lang.getString(Lang.MENU_CREDITS));
-		m_credits.setOnDownCallback(_onCredits);
+		m_credits.setOnUpCallback(_onCredits);
 		//m_credits.setFormat("assets/Designer-Notes.ttf", 25, 0x888888, "center", FlxText.BORDER_NONE, 0, true);
 		add(m_credits);
+
+		m_sound = new Button(FlxG.width - 8-4, 4, 3);
+		add(m_sound);
 
 		super.create();
 	}
@@ -96,7 +100,7 @@ class StateTitle extends StateFade
 	
 	private function _onStartReady():Void
 	{
-		FlxG.switchState(new Stage1());
+		FlxG.switchState(new StateIntro1());
 	}
 
 	private function _onCreditsReady():Void
