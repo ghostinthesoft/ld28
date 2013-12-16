@@ -111,7 +111,7 @@ class Lang extends StateFade
 			case STAGE1_HOSTILE_WALK_TEXT1:
 				return (m_lang == 0)?"Je veux ma tarte au citron !":"I want my lemon pie !";
 			case STAGE1_HOSTILE_WALK_TEXT2:
-				return (m_lang == 0)?"Qui a mangé tout les tartes ?":"Who ate all the pies ?";
+				return (m_lang == 0)?"Qui a mangé toutes les tartes ?":"Who ate all the pies ?";
 			case STAGE1_HOSTILE_WALK_TEXT3:
 				return (m_lang == 0)?"Qu'on me donne une tarte au citron tout de suite !":"Somebody give a lemon pie, quick !";
 			case STAGE1_HOSTILE_HOLD_TEXT1:

@@ -35,6 +35,14 @@ class Stage1 extends Stage
 		m_bg.loadGraphic("assets/b_stage1.png", false, false);
 		m_bg.setPosition(0, 0);
 		
+		m_left = new FlxSprite();
+		m_left.loadGraphic("assets/b_left.png", false, false);
+		m_left.setPosition(0, FlxG.height-80);
+		
+		m_right = new FlxSprite();
+		m_right.loadGraphic("assets/b_right.png", false, false);
+		m_right.setPosition(FlxG.width-120, FlxG.height-80);
+		
 		// hostile is walking
 		m_step.push(Stage.STEP_HOLD);
 		m_char[0].posx = FlxG.width*0.5 ;

@@ -49,6 +49,8 @@ class Stage extends StateFade
 	private var m_char:Array<Character>;
 	
 	private var m_bg:FlxSprite;
+	private var m_left:FlxSprite;
+	private var m_right:FlxSprite;
 	private var m_launch:FlxSprite;
 
 	private var m_wait_talk:Int = 0;
@@ -72,6 +74,8 @@ class Stage extends StateFade
 		add(m_bg);				
 		add(m_char[0]);
 		add(m_char[1]);
+		add(m_left);
+		add(m_right);
 		
 		// process state for characters
 		_processStep(0);
@@ -208,10 +212,14 @@ class Stage extends StateFade
 	private function _end():Void
 	{
 		FlxG.camera.stopFX();
-		remove(m_sound);
+		clear();
+		/*remove(m_sound);
 		remove(m_bg);
 		remove(m_char[0]);
 		remove(m_char[1]);
+		remove(m_left);
+		remove(m_right);*/
+		
 		if (m_missed == 0)
 		{
 			_finalScreen();

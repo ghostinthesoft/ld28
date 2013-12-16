@@ -75,7 +75,7 @@ class Character extends FlxTypedGroup<FlxSprite>
 
 	
 	
-	public function new(a_type:Int, a_liney:Float=80) 
+	public function new(a_type:Int, a_liney:Float=90) 
 	{
 		super();
 		m_type = a_type;
@@ -137,7 +137,7 @@ class Character extends FlxTypedGroup<FlxSprite>
 		add(m_arms);
 		
 		m_talk = new FlxText(0, 0, FlxG.width >> 1);
-		var _talkColor:Int = (isHostile)?0xFFFF0000:0xFF0000FF;
+		var _talkColor:Int = 0xFF000000;
 		m_talk.setFormat(Game.FONT_TALK, 8, _talkColor, "center");
 		m_talk.visible = false;
 		add(m_talk);
